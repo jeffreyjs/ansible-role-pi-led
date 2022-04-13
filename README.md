@@ -1,4 +1,4 @@
-Role Name
+Ansible Role: pi-led
 =========
 
 Create a service to disable/enable power and activity led on a raspberry pi
