@@ -1,0 +1,7 @@
+---
+# defaults file for raspi-led
+disable_power_led: true
+disable_activity_led: false
+
+power_led: "led0"
+activity_led: "led1"

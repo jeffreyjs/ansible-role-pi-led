@@ -1,0 +1,33 @@
+---
+# tasks file for raspi-led
+- name: Get Raspberry Pi Model
+  ansible.builtin.slurp:
+    src: /sys/firmware/devicetree/base/model
+  register: base_model_encoded
+
+- name: Decode base/model file content
+  ansible.builtin.set_fact:
+    pi_model: "{{ base_model_encoded.content | b64decode }}"
+
+- name: Set led variables for Raspberry Pi 4
+  ansible.builtin.set_fact:
+    power_led: "led1"
+    activity_led: "led0"
+  when: pi_model | regex_search("^Raspberry Pi 4")
+
+- name: Create service file from template
+  ansible.builtin.template:
+    src: templates/disable-led.service.j2
+    dest: /etc/systemd/system/disable-led.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- name: Restart disable-led service with daemon-reload
+  ansible.builtin.systemd:
+    state: started
+    enabled: true
+    daemon_reload: true
+    name: disable-led
+  become: true

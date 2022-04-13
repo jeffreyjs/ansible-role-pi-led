@@ -1,0 +1,11 @@
+[Unit]
+Description=Disables the power-LED {% if disable_activity_led %}and active-LED{% endif %}
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=sh -c "echo 0 | sudo tee /sys/class/leds/{{ power_led }}/brightness > /dev/null{% if disable_activity_led %} && echo 0 | sudo tee /sys/class/leds/{{ activity_led }}/brightness{% endif %}"
+ExecStop=sh -c "echo 1 | sudo tee /sys/class/leds/{{ power_led }}/brightness > /dev/null{% if disable_activity_led %} && echo 1 | sudo tee /sys/class/leds/{{ activity_led }}/brightness{% endif %}"
+
+[Install]
+WantedBy=multi-user.target
